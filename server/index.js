@@ -10,6 +10,23 @@ const userContentRouter = require('./routes/user_content');
 const databaseViewRouter = require('./routes/database-view');
 const quranRouter = require('./routes/quran');
 
+const app = express();
+const port = process.env.PORT || 3002;
+
+// Middleware pour parser le JSON
+app.use(express.json());
+
+// Middleware CORS
+app.use(cors());
+
+// Servir les fichiers statiques
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Route de base pour le healthcheck
+app.get('/', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 // Vérifier les variables d'environnement requises
 const requiredEnvVars = ['NODE_ENV', 'PORT'];
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
@@ -19,21 +36,6 @@ if (missingEnvVars.length > 0) {
     process.exit(1);
 }
 
-const app = express();
-const port = process.env.PORT || 3002;
-
-// Middleware pour parser le JSON - doit être avant les routes
-app.use(express.json({
-    strict: false,
-    reviver: (key, value) => {
-        console.log(`Clé: ${key}, Valeur: ${value}`);
-        return value;
-    }
-}));
-
-// Middleware CORS
-app.use(cors());
-
 // Middleware pour le logging des requêtes
 app.use((req, res, next) => {
     logger.info(`${req.method} ${req.url}`, {
@@ -42,11 +44,6 @@ app.use((req, res, next) => {
         body: req.method === 'POST' ? JSON.stringify(req.body) : undefined
     });
     next();
-});
-
-// Route de healthcheck
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'healthy' });
 });
 
 // Log des routes disponibles
@@ -70,14 +67,6 @@ app.use('/api/quran', quranRouter);
 app.use('/api/*', (req, res) => {
     logger.warn(`Route API non trouvée: ${req.method} ${req.url}`);
     res.status(404).json({ error: 'Route API non trouvée' });
-});
-
-// Servir les fichiers statiques depuis le dossier public
-app.use(express.static(path.join(__dirname, '../public')));
-
-// Route principale
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/views/index.html'));
 });
 
 // Routes pour les pages principales
