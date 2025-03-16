@@ -1,0 +1,16 @@
+ErrorDocument 404 /views/404.html
+ErrorDocument 500 /views/500.html
+
+<Files "favicon.ico">
+    Header set Cache-Control "public, max-age=31536000"
+</Files>
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirection de la racine vers index.html
+RewriteRule ^$ /views/index.html [L]
+
+# Redirection des autres URLs vers les fichiers HTML correspondants
+RewriteRule ^([^/]+)/?$ /views/$1.html [L]

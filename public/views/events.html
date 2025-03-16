@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components/header.css">
+    <link rel="stylesheet" href="/css/events.css">
+    <link rel="stylesheet" href="/css/components/footer.css">
+    <link rel="stylesheet" href="/css/components/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="hadith-banner">
+        <div class="hadith-text">
+            يقول ﷺ: ما نقص مالٌ من صدقةٍ، وما زاد الله عبدًا بعفوٍ إلا عزًّا، وما تواضع أحدٌ لله إلا رفعه
+        </div>
+    </div>
+
+    <div class="event-banners-container">
+        <!-- Bannière pour la récolte de fonds -->
+        <div class="event-banner">
+            <img src="https://lh3.googleusercontent.com/p/AF1QipOPwMIOpwlHlEXbQNnwTogUWG6mFwLvkd-FRrhP=s680-w680-h510-rw" alt="Mosquée">
+            <div class="event-banner-content">
+                <h2 class="event-banner-title">Récolte de Fonds pour l'Entretien de la Mosquée</h2>
+                <p class="event-banner-description">Participez à l'entretien et à l'amélioration de notre lieu de culte. Chaque contribution compte pour maintenir notre mosquée en bon état.</p>
+                <a href="#" class="event-banner-button donation-btn" onclick="showDonationModal()">Faire un Don</a>
+            </div>
+        </div>
+
+        <!-- Bannière pour les volontaires Ramadan -->
+        <div class="event-banner">
+            <img src="https://lh3.googleusercontent.com/p/AF1QipOPwMIOpwlHlEXbQNnwTogUWG6mFwLvkd-FRrhP=s680-w680-h510-rw" alt="Mosquée">
+            <div class="event-banner-content">
+                <h2 class="event-banner-title">Appel aux Volontaires pour Ramadan</h2>
+                <p class="event-banner-description">Rejoignez notre équipe de bénévoles pour l'organisation du mois sacré de Ramadan. Ensemble, créons une atmosphère chaleureuse et accueillante.</p>
+                <a href="#" class="event-banner-button volunteer-btn" onclick="showVolunteerModal()">Devenir Volontaire</a>
+            </div>
+        </div>
+
+        <!-- Bannière pour la Zakat -->
+        <div class="event-banner">
+            <img src="https://lh3.googleusercontent.com/p/AF1QipOPwMIOpwlHlEXbQNnwTogUWG6mFwLvkd-FRrhP=s680-w680-h510-rw" alt="Mosquée">
+            <div class="event-banner-content">
+                <h2 class="event-banner-title">Paiement de la Zakat</h2>
+                <p class="event-banner-description">Accomplissez votre devoir de Zakat. Notre mosquée facilite le processus de paiement et assure une distribution équitable aux personnes dans le besoin.</p>
+                <a href="#" class="event-banner-button zakat-btn" onclick="showZakatModal()">Payer la Zakat</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour les volontaires -->
+    <div id="volunteerModal" class="modal">
+        <div class="modal-content contact-info">
+            <span class="close" onclick="closeVolunteerModal()">&times;</span>
+            <p>Merci de vous rapprocher des organisateurs :</p>
+            <div class="contact-details">
+                <p><i class="fas fa-phone"></i> Tél : 01.39.61.08.17</p>
+                <p><i class="fas fa-map-marker-alt"></i> Adresse : 20 avenue du parc, 95100 Argenteuil</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour la Zakat -->
+    <div id="zakatModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeZakatModal()">&times;</span>
+            <img src="https://scontent-cdg4-3.xx.fbcdn.net/v/t39.30808-6/474687884_920376806939995_7938864759502390097_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=SONTB4bEskgQ7kNvgHBig4C&_nc_oc=AdiG3sbr45V9Yz_5bu93lJngN21vG7vsvUWIuAcOCNGIv-fIkd4C7N6UAKldC4txgfQ&_nc_zt=23&_nc_ht=scontent-cdg4-3.xx&_nc_gid=AQOPp5EV6qLh6Jlo86COtmQ&oh=00_AYB8CYtfH2w5z_zcxzjKVb1g3dN-l-X6FWvXdm-SAYb0sA&oe=67C2980D" alt="Information" class="modal-image">
+        </div>
+    </div>
+
+    <!-- Modal pour les dons -->
+    <div id="donationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDonationModal()">&times;</span>
+            <img src="https://scontent-cdg4-3.xx.fbcdn.net/v/t39.30808-6/474687884_920376806939995_7938864759502390097_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=SONTB4bEskgQ7kNvgHBig4C&_nc_oc=AdiG3sbr45V9Yz_5bu93lJngN21vG7vsvUWIuAcOCNGIv-fIkd4C7N6UAKldC4txgfQ&_nc_zt=23&_nc_ht=scontent-cdg4-3.xx&_nc_gid=AQOPp5EV6qLh6Jlo86COtmQ&oh=00_AYB8CYtfH2w5z_zcxzjKVb1g3dN-l-X6FWvXdm-SAYb0sA&oe=67C2980D" alt="Information" class="modal-image">
+        </div>
+    </div>
+
+    <div id="footer-placeholder"> </div>
+
+    <script src="../js/header-loader.js"></script>
+    <script src="/js/footer-loader.js"></script>
+    <script src="/js/events-slider.js"></script>
+    <script src="../js/events.js"></script>
+    <script>
+        function showVolunteerModal() {
+            document.getElementById('volunteerModal').style.display = 'block';
+        }
+
+        function closeVolunteerModal() {
+            document.getElementById('volunteerModal').style.display = 'none';
+        }
+
+        function showZakatModal() {
+            document.getElementById('zakatModal').style.display = 'block';
+        }
+
+        function closeZakatModal() {
+            document.getElementById('zakatModal').style.display = 'none';
+        }
+
+        function showDonationModal() {
+            document.getElementById('donationModal').style.display = 'block';
+        }
+
+        function closeDonationModal() {
+            document.getElementById('donationModal').style.display = 'none';
+        }
+
+        // Fermer les modals si on clique en dehors
+        window.onclick = function(event) {
+            const modals = [
+                document.getElementById('volunteerModal'),
+                document.getElementById('zakatModal'),
+                document.getElementById('donationModal')
+            ];
+            
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

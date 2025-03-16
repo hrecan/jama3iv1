@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jama3i - Cours</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components/header.css">
+    <link rel="stylesheet" href="/css/courses.css">
+    <link rel="stylesheet" href="/css/components/forms.css">
+    <link rel="stylesheet" href="/css/components/footer.css">
+    <link rel="stylesheet" href="/css/components/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <main>
+        <div class="container">
+            <div class="header-actions">
+                <h1>Bibliothèque Vidéo Islamique</h1>
+            </div>
+
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="category-filter">Catégorie:</label>
+                    <select id="category-filter">
+                        <option value="all">Toutes les catégories</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="author-filter">auteur:</label>
+                    <select id="author-filter">
+                        <option value="all">Tous les auteurs</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="videos-container" class="video-grid">
+                <!-- Les vidéos seront ajoutées ici dynamiquement -->
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="../js/header-loader.js"></script>
+    <script src="../js/courses.js"></script>
+</body>
+</html>

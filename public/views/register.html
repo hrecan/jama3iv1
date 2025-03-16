@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jama3i - Inscription</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/components/header.css">
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="/css/components/footer.css">
+    <link rel="stylesheet" href="/css/components/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="auth-container">
+        <div class="auth-form">
+            <h2>Inscription</h2>
+            <div id="error-message" class="error-message"></div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="us_fname">Nom</label>
+                    <input type="text" id="us_fname" name="us_fname" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="us_lname">Prénom</label>
+                    <input type="text" id="us_lname" name="us_lname" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="us_gender">Sexe</label>
+                    <select id="us_gender" name="us_gender" required>
+                        <option value="">Sélectionnez</option>
+                        <option value="M">Masculin</option>
+                        <option value="F">Féminin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="us_bdate">Date de naissance</label>
+                    <input type="date" id="us_bdate" name="us_bdate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="us_email">Email</label>
+                    <input type="email" id="us_email" name="us_email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="us_phone">Numéro de téléphone</label>
+                    <input type="tel" id="us_phone" name="us_phone" required pattern="[0-9]{10}">
+                </div>
+
+                <div class="form-group">
+                    <label for="us_city">Ville</label>
+                    <input type="text" id="us_city" name="us_city" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="us_password">Mot de passe</label>
+                    <div class="password-input-container">
+                        <input type="password" id="us_password" name="us_password" required minlength="8">
+                        <i class="fas fa-eye-slash toggle-password" data-target="us_password"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirmer le mot de passe</label>
+                    <div class="password-input-container">
+                        <input type="password" id="confirm-password" name="confirm-password" required minlength="8">
+                        <i class="fas fa-eye-slash toggle-password" data-target="confirm-password"></i>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="us_status" name="us_status" value="active">
+                
+                <button type="submit" class="auth-button">S'inscrire</button>
+
+                <div class="social-login">
+                    <p>Ou inscrivez-vous avec :</p>
+                    <div class="social-buttons">
+                        <button type="button" id="google-signup" class="social-button google">
+                            <i class="fab fa-google"></i> Google
+                        </button>
+                        <button type="button" id="facebook-signup" class="social-button facebook">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <p>Déjà inscrit ? <button class="link-button" onclick="openLoginModal()">Se connecter</button></p>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour basculer la visibilité du mot de passe
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+            });
+        });
+
+        // Gestionnaire d'inscription avec Google
+        document.getElementById('google-signup').addEventListener('click', async function() {
+            try {
+                window.location.href = 'http://localhost:3002/api/auth/google';
+            } catch (error) {
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.textContent = 'Erreur lors de la connexion avec Google';
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        // Gestionnaire d'inscription avec Facebook
+        document.getElementById('facebook-signup').addEventListener('click', async function() {
+            try {
+                window.location.href = 'http://localhost:3002/api/auth/facebook';
+            } catch (error) {
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.textContent = 'Erreur lors de la connexion avec Facebook';
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        // Gestionnaire du formulaire d'inscription
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const us_fname = document.getElementById('us_fname').value;
+            const us_lname = document.getElementById('us_lname').value;
+            const us_gender = document.getElementById('us_gender').value;
+            const us_bdate = document.getElementById('us_bdate').value;
+            const us_email = document.getElementById('us_email').value;
+            const us_phone = document.getElementById('us_phone').value;
+            const us_city = document.getElementById('us_city').value;
+            const us_password = document.getElementById('us_password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const us_status = document.getElementById('us_status').value;
+            const errorMessage = document.getElementById('error-message');
+            
+            // Validation des champs
+            if (!us_fname || !us_lname || !us_gender || !us_bdate || !us_email || !us_phone || !us_city || !us_password) {
+                errorMessage.textContent = 'Veuillez remplir tous les champs obligatoires.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            if (us_password !== confirmPassword) {
+                errorMessage.textContent = 'Les mots de passe ne correspondent pas.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Validation du format du numéro de téléphone
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(us_phone)) {
+                errorMessage.textContent = 'Le numéro de téléphone doit contenir 10 chiffres.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Validation du mot de passe
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(us_password)) {
+                errorMessage.textContent = 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            try {
+                // Envoi des données au serveur
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        us_fname,
+                        us_lname,
+                        us_gender,
+                        us_bdate,
+                        us_email,
+                        us_phone,
+                        us_city,
+                        us_password,
+                        us_status,
+                        us_type: 'user',
+                        mosque_id: null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Erreur lors de l\'inscription');
+                }
+
+                if (data.success) {
+                    // Stocker le token dans localStorage
+                    localStorage.setItem('token', data.token);
+                    // Rediriger vers la page d'accueil
+                    window.location.href = '/';
+                } else {
+                    errorMessage.textContent = data.message || 'Erreur lors de l\'inscription';
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                errorMessage.textContent = error.message || 'Une erreur est survenue lors de l\'inscription';
+            }
+        });
+    </script>
+
+    <script src="../js/header-loader.js"></script>
+</body>
+</html>
