@@ -31,11 +31,8 @@ app.use(express.json({
     }
 }));
 
-// Configuration CORS moins restrictive
-app.use(cors({
-    origin: 'http://localhost:3002',
-    credentials: true
-}));
+// Middleware CORS
+app.use(cors());
 
 // Middleware pour le logging des requêtes
 app.use((req, res, next) => {
@@ -45,6 +42,11 @@ app.use((req, res, next) => {
         body: req.method === 'POST' ? JSON.stringify(req.body) : undefined
     });
     next();
+});
+
+// Route de healthcheck
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'healthy' });
 });
 
 // Log des routes disponibles
