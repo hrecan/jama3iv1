@@ -4,21 +4,23 @@ const cors = require('cors');
 const path = require('path');
 const logger = require('./utils/logger');
 const mysql = require('mysql2/promise');
-const dns = require('dns').promises;
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Configuration de la base de données
+const host = process.env.MYSQL_HOST || process.env.RAILWAY_TCP_PROXY_DOMAIN || process.env.RAILWAY_PRIVATE_DOMAIN;
+if (!host) {
+    throw new Error('Aucune variable d\'environnement d\'hôte MySQL trouvée');
+}
+
 const dbConfig = {
-    host: process.env.RAILWAY_PRIVATE_DOMAIN,  // Utiliser directement la variable d'environnement
+    host: host,
     user: process.env.MYSQL_USER || 'root',
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE || 'railway',
     port: parseInt(process.env.MYSQL_PORT || '3306'),
-    // Forcer IPv4
-    connectTimeout: 30000,
-    flags: '-FOUND_ROWS'
+    connectTimeout: 30000
 };
 
 // Middleware de base
@@ -32,13 +34,6 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.get('/', async (req, res) => {
     let connection;
     try {
-        // Résoudre l'adresse IPv4
-        const addresses = await dns.resolve4(dbConfig.host);
-        console.log('Adresses IPv4 résolues:', addresses);
-        if (addresses && addresses.length > 0) {
-            dbConfig.host = addresses[0];
-        }
-
         // Tester la connexion à la base de données
         connection = await mysql.createConnection(dbConfig);
         await connection.ping();
@@ -54,6 +49,7 @@ app.get('/', async (req, res) => {
             },
             env: {
                 RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
+                RAILWAY_TCP_PROXY_DOMAIN: process.env.RAILWAY_TCP_PROXY_DOMAIN,
                 MYSQL_HOST: process.env.MYSQL_HOST,
                 MYSQL_USER: process.env.MYSQL_USER,
                 MYSQL_DATABASE: process.env.MYSQL_DATABASE,
@@ -76,6 +72,7 @@ app.get('/', async (req, res) => {
             },
             env: {
                 RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
+                RAILWAY_TCP_PROXY_DOMAIN: process.env.RAILWAY_TCP_PROXY_DOMAIN,
                 MYSQL_HOST: process.env.MYSQL_HOST,
                 MYSQL_USER: process.env.MYSQL_USER,
                 MYSQL_DATABASE: process.env.MYSQL_DATABASE,
@@ -99,4 +96,10 @@ app.use((err, req, res, next) => {
 // Démarrage du serveur
 const server = app.listen(port, '0.0.0.0', () => {
     logger.info(`Server is running on port ${port}`);
+    logger.info('Database config:', {
+        host: dbConfig.host,
+        user: dbConfig.user,
+        database: dbConfig.database,
+        port: dbConfig.port
+    });
 });
