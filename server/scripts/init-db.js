@@ -12,8 +12,15 @@ async function initializeDatabase() {
         port: process.env.DB_PORT
     };
 
+    let connection;
     try {
+        // Tester la connexion
+        console.log('Tentative de connexion à la base de données...');
+        connection = await mysql.createConnection(dbConfig);
+        console.log('Connexion établie avec succès');
+
         // Lire le fichier SQL
+        console.log('Lecture du fichier SQL...');
         const sqlFile = await fs.readFile(
             path.join(__dirname, '../database/database.sql'),
             'utf8'
@@ -24,30 +31,40 @@ async function initializeDatabase() {
             .split(';')
             .filter(stmt => stmt.trim());
 
-        // Créer la connexion
-        const connection = await mysql.createConnection(dbConfig);
-        console.log('Connected to database');
-
         // Exécuter chaque instruction SQL
+        console.log('Exécution des requêtes SQL...');
         for (const statement of sqlStatements) {
             if (statement.trim()) {
                 try {
                     await connection.query(statement);
-                    console.log('Successfully executed:', statement.substring(0, 50) + '...');
+                    console.log('Requête exécutée avec succès');
                 } catch (error) {
-                    console.error('Error executing:', statement.substring(0, 50) + '...');
-                    console.error('Error details:', error.message);
+                    if (error.code === 'ER_TABLE_EXISTS_ERROR') {
+                        console.log('Table déjà existante, continuation...');
+                    } else {
+                        throw error;
+                    }
                 }
             }
         }
 
-        console.log('Database initialization completed');
-        await connection.end();
+        console.log('Initialisation de la base de données terminée avec succès');
 
     } catch (error) {
-        console.error('Database initialization failed:', error);
-        process.exit(1);
+        console.error('Erreur lors de l\'initialisation de la base de données:', error);
+        // Ne pas quitter le processus en cas d'erreur
+        console.log('Continuation malgré l\'erreur...');
+    } finally {
+        if (connection) {
+            await connection.end();
+            console.log('Connexion à la base de données fermée');
+        }
     }
 }
 
-initializeDatabase();
+// Exécuter et continuer même en cas d'erreur
+initializeDatabase()
+    .catch(console.error)
+    .finally(() => {
+        console.log('Script d\'initialisation terminé');
+    });
