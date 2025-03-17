@@ -5,11 +5,14 @@ const path = require('path');
 
 async function initializeDatabase() {
     const dbConfig = {
-        host: process.env.RAILWAY_PRIVATE_DOMAIN,  // Utiliser directement la variable d'environnement
+        host: process.env.RAILWAY_PRIVATE_DOMAIN,
         user: process.env.MYSQL_USER || 'root',
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE || 'railway',
-        port: parseInt(process.env.MYSQL_PORT || '3306')
+        port: parseInt(process.env.MYSQL_PORT || '3306'),
+        // Forcer IPv4
+        connectTimeout: 30000,
+        flags: '-FOUND_ROWS'
     };
 
     console.log('Variables d\'environnement disponibles:', {
@@ -31,6 +34,13 @@ async function initializeDatabase() {
     try {
         // Tester la connexion
         console.log('Tentative de connexion à la base de données...');
+        // Forcer l'utilisation de l'adresse IPv4
+        const addresses = await require('dns').promises.resolve4(dbConfig.host);
+        console.log('Adresses IPv4 résolues:', addresses);
+        if (addresses && addresses.length > 0) {
+            dbConfig.host = addresses[0];
+        }
+        
         connection = await mysql.createConnection(dbConfig);
         console.log('Connexion établie avec succès');
 
