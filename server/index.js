@@ -8,13 +8,13 @@ const mysql = require('mysql2/promise');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuration de la base de données
+// Configuration de la base de données avec les variables d'environnement correctes
 const dbConfig = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    port: parseInt(process.env.DB_PORT)
 };
 
 // Middleware de base
@@ -35,6 +35,12 @@ app.get('/', async (req, res) => {
         res.status(200).json({ 
             status: 'healthy',
             database: 'connected',
+            config: {
+                host: dbConfig.host,
+                user: dbConfig.user,
+                database: dbConfig.database,
+                port: dbConfig.port
+            },
             timestamp: new Date().toISOString()
         });
     } catch (error) {
@@ -44,6 +50,12 @@ app.get('/', async (req, res) => {
             status: 'starting',
             database: 'initializing',
             error: error.message,
+            config: {
+                host: dbConfig.host,
+                user: dbConfig.user,
+                database: dbConfig.database,
+                port: dbConfig.port
+            },
             timestamp: new Date().toISOString()
         });
     } finally {

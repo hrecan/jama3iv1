@@ -9,8 +9,15 @@ async function initializeDatabase() {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
-        port: process.env.DB_PORT
+        port: parseInt(process.env.DB_PORT)
     };
+
+    console.log('Configuration DB:', {
+        host: dbConfig.host,
+        user: dbConfig.user,
+        database: dbConfig.database,
+        port: dbConfig.port
+    });
 
     let connection;
     try {
@@ -42,7 +49,7 @@ async function initializeDatabase() {
                     if (error.code === 'ER_TABLE_EXISTS_ERROR') {
                         console.log('Table déjà existante, continuation...');
                     } else {
-                        throw error;
+                        console.error('Erreur SQL:', error.message);
                     }
                 }
             }
@@ -52,7 +59,6 @@ async function initializeDatabase() {
 
     } catch (error) {
         console.error('Erreur lors de l\'initialisation de la base de données:', error);
-        // Ne pas quitter le processus en cas d'erreur
         console.log('Continuation malgré l\'erreur...');
     } finally {
         if (connection) {
