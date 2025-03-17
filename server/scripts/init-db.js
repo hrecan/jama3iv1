@@ -5,12 +5,20 @@ const path = require('path');
 
 async function initializeDatabase() {
     const dbConfig = {
-        host: process.env.MYSQL_HOST || process.env.RAILWAY_PRIVATE_DOMAIN,
+        host: process.env.RAILWAY_PRIVATE_DOMAIN,  // Utiliser directement la variable d'environnement
         user: process.env.MYSQL_USER || 'root',
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE || 'railway',
         port: parseInt(process.env.MYSQL_PORT || '3306')
     };
+
+    console.log('Variables d\'environnement disponibles:', {
+        RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
+        MYSQL_HOST: process.env.MYSQL_HOST,
+        MYSQL_USER: process.env.MYSQL_USER,
+        MYSQL_DATABASE: process.env.MYSQL_DATABASE,
+        MYSQL_PORT: process.env.MYSQL_PORT
+    });
 
     console.log('Configuration DB:', {
         host: dbConfig.host,

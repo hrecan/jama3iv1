@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 
 // Configuration de la base de données
 const dbConfig = {
-    host: process.env.MYSQL_HOST || process.env.RAILWAY_PRIVATE_DOMAIN,
+    host: process.env.RAILWAY_PRIVATE_DOMAIN,  // Utiliser directement la variable d'environnement
     user: process.env.MYSQL_USER || 'root',
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE || 'railway',
@@ -41,6 +41,13 @@ app.get('/', async (req, res) => {
                 database: dbConfig.database,
                 port: dbConfig.port
             },
+            env: {
+                RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
+                MYSQL_HOST: process.env.MYSQL_HOST,
+                MYSQL_USER: process.env.MYSQL_USER,
+                MYSQL_DATABASE: process.env.MYSQL_DATABASE,
+                MYSQL_PORT: process.env.MYSQL_PORT
+            },
             timestamp: new Date().toISOString()
         });
     } catch (error) {
@@ -55,6 +62,13 @@ app.get('/', async (req, res) => {
                 user: dbConfig.user,
                 database: dbConfig.database,
                 port: dbConfig.port
+            },
+            env: {
+                RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
+                MYSQL_HOST: process.env.MYSQL_HOST,
+                MYSQL_USER: process.env.MYSQL_USER,
+                MYSQL_DATABASE: process.env.MYSQL_DATABASE,
+                MYSQL_PORT: process.env.MYSQL_PORT
             },
             timestamp: new Date().toISOString()
         });
