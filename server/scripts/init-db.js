@@ -8,21 +8,16 @@ process.env.NODE_OPTIONS = '--dns-result-order=ipv4first';
 
 async function initializeDatabase() {
     // Récupérer l'hôte depuis les variables d'environnement
-    const host = process.env.MYSQL_HOST || process.env.RAILWAY_TCP_PROXY_DOMAIN || process.env.RAILWAY_PRIVATE_DOMAIN;
+    const privateHost = process.env.RAILWAY_PRIVATE_DOMAIN;
+    const proxyHost = process.env.RAILWAY_TCP_PROXY_DOMAIN;
+    const mysqlHost = process.env.MYSQL_HOST;
+
+    // Construire l'hôte complet avec le port
+    const host = mysqlHost || (privateHost ? `${privateHost}:${process.env.MYSQL_PORT || '3306'}` : proxyHost);
+    
     if (!host) {
         throw new Error('Aucune variable d\'environnement d\'hôte MySQL trouvée');
     }
-
-    const dbConfig = {
-        host: host,
-        user: process.env.MYSQL_USER || 'root',
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE || 'railway',
-        port: parseInt(process.env.MYSQL_PORT || '3306'),
-        connectTimeout: 30000,
-        // Forcer IPv4
-        family: 4
-    };
 
     console.log('Variables d\'environnement disponibles:', {
         RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
@@ -30,8 +25,20 @@ async function initializeDatabase() {
         MYSQL_HOST: process.env.MYSQL_HOST,
         MYSQL_USER: process.env.MYSQL_USER,
         MYSQL_DATABASE: process.env.MYSQL_DATABASE,
-        MYSQL_PORT: process.env.MYSQL_PORT
+        MYSQL_PORT: process.env.MYSQL_PORT,
+        MYSQL_URL: process.env.MYSQL_URL
     });
+
+    const dbConfig = {
+        host: host.split(':')[0],  // Extraire l'hôte sans le port
+        port: parseInt(host.split(':')[1] || process.env.MYSQL_PORT || '3306'),
+        user: process.env.MYSQL_USER || 'root',
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE || 'railway',
+        connectTimeout: 30000,
+        // Forcer IPv4
+        family: 4
+    };
 
     console.log('Configuration DB:', {
         host: dbConfig.host,

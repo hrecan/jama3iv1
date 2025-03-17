@@ -12,17 +12,23 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Configuration de la base de données
-const host = process.env.MYSQL_HOST || process.env.RAILWAY_TCP_PROXY_DOMAIN || process.env.RAILWAY_PRIVATE_DOMAIN;
+const privateHost = process.env.RAILWAY_PRIVATE_DOMAIN;
+const proxyHost = process.env.RAILWAY_TCP_PROXY_DOMAIN;
+const mysqlHost = process.env.MYSQL_HOST;
+
+// Construire l'hôte complet avec le port
+const host = mysqlHost || (privateHost ? `${privateHost}:${process.env.MYSQL_PORT || '3306'}` : proxyHost);
+
 if (!host) {
     throw new Error('Aucune variable d\'environnement d\'hôte MySQL trouvée');
 }
 
 const dbConfig = {
-    host: host,
+    host: host.split(':')[0],  // Extraire l'hôte sans le port
+    port: parseInt(host.split(':')[1] || process.env.MYSQL_PORT || '3306'),
     user: process.env.MYSQL_USER || 'root',
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE || 'railway',
-    port: parseInt(process.env.MYSQL_PORT || '3306'),
     connectTimeout: 30000,
     // Forcer IPv4
     family: 4
