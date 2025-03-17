@@ -5,6 +5,9 @@ const path = require('path');
 const logger = require('./utils/logger');
 const mysql = require('mysql2/promise');
 
+// Forcer l'utilisation d'IPv4
+process.env.NODE_OPTIONS = '--dns-result-order=ipv4first';
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -20,7 +23,9 @@ const dbConfig = {
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE || 'railway',
     port: parseInt(process.env.MYSQL_PORT || '3306'),
-    connectTimeout: 30000
+    connectTimeout: 30000,
+    // Forcer IPv4
+    family: 4
 };
 
 // Middleware de base
@@ -45,7 +50,8 @@ app.get('/', async (req, res) => {
                 host: dbConfig.host,
                 user: dbConfig.user,
                 database: dbConfig.database,
-                port: dbConfig.port
+                port: dbConfig.port,
+                family: dbConfig.family
             },
             env: {
                 RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
@@ -68,7 +74,8 @@ app.get('/', async (req, res) => {
                 host: dbConfig.host,
                 user: dbConfig.user,
                 database: dbConfig.database,
-                port: dbConfig.port
+                port: dbConfig.port,
+                family: dbConfig.family
             },
             env: {
                 RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
@@ -100,6 +107,7 @@ const server = app.listen(port, '0.0.0.0', () => {
         host: dbConfig.host,
         user: dbConfig.user,
         database: dbConfig.database,
-        port: dbConfig.port
+        port: dbConfig.port,
+        family: dbConfig.family
     });
 });

@@ -3,6 +3,9 @@ const mysql = require('mysql2/promise');
 const fs = require('fs').promises;
 const path = require('path');
 
+// Forcer l'utilisation d'IPv4
+process.env.NODE_OPTIONS = '--dns-result-order=ipv4first';
+
 async function initializeDatabase() {
     // Récupérer l'hôte depuis les variables d'environnement
     const host = process.env.MYSQL_HOST || process.env.RAILWAY_TCP_PROXY_DOMAIN || process.env.RAILWAY_PRIVATE_DOMAIN;
@@ -16,7 +19,9 @@ async function initializeDatabase() {
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE || 'railway',
         port: parseInt(process.env.MYSQL_PORT || '3306'),
-        connectTimeout: 30000
+        connectTimeout: 30000,
+        // Forcer IPv4
+        family: 4
     };
 
     console.log('Variables d\'environnement disponibles:', {
@@ -32,7 +37,8 @@ async function initializeDatabase() {
         host: dbConfig.host,
         user: dbConfig.user,
         database: dbConfig.database,
-        port: dbConfig.port
+        port: dbConfig.port,
+        family: dbConfig.family
     });
 
     let connection;
@@ -66,6 +72,7 @@ async function initializeDatabase() {
                         console.log('Table déjà existante, continuation...');
                     } else {
                         console.error('Erreur SQL:', error.message);
+                        throw error;
                     }
                 }
             }
@@ -75,7 +82,7 @@ async function initializeDatabase() {
 
     } catch (error) {
         console.error('Erreur lors de l\'initialisation de la base de données:', error);
-        throw error; // Propager l'erreur pour un meilleur diagnostic
+        throw error;
     } finally {
         if (connection) {
             await connection.end();
@@ -88,5 +95,5 @@ async function initializeDatabase() {
 initializeDatabase()
     .catch(error => {
         console.error('Erreur fatale:', error);
-        process.exit(1); // Sortir avec un code d'erreur
+        process.exit(1);
     });
