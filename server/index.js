@@ -4,9 +4,10 @@ const cors = require('cors');
 const path = require('path');
 const logger = require('./utils/logger');
 const mysql = require('mysql2/promise');
+const dns = require('dns');
 
 // Forcer l'utilisation d'IPv4
-process.env.NODE_OPTIONS = '--dns-result-order=ipv4first';
+dns.setDefaultResultOrder('ipv4first');
 
 const app = express();
 const port = process.env.PORT || 3000;

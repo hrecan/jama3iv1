@@ -2,9 +2,10 @@ require('dotenv').config();
 const mysql = require('mysql2/promise');
 const fs = require('fs').promises;
 const path = require('path');
+const dns = require('dns');
 
 // Forcer l'utilisation d'IPv4
-process.env.NODE_OPTIONS = '--dns-result-order=ipv4first';
+dns.setDefaultResultOrder('ipv4first');
 
 async function initializeDatabase() {
     // Récupérer l'hôte depuis les variables d'environnement
@@ -36,8 +37,6 @@ async function initializeDatabase() {
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE || 'railway',
         connectTimeout: 30000,
-        // Configuration IPv4
-        family: 4,
         // Options de connexion valides pour mysql2
         connectionLimit: 10,
         waitForConnections: true,
@@ -48,8 +47,7 @@ async function initializeDatabase() {
         host: dbConfig.host,
         user: dbConfig.user,
         database: dbConfig.database,
-        port: dbConfig.port,
-        family: dbConfig.family
+        port: dbConfig.port
     });
 
     let connection;
