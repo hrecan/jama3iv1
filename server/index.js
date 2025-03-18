@@ -35,65 +35,24 @@ app.use(cors());
 // Servir les fichiers statiques
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Route de healthcheck simple
+// Endpoint de santé qui ne dépend pas de la base de données
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
 
-// Route de healthcheck avec vérification de la base de données
+// Route principale
 app.get('/', async (req, res) => {
-    let connection;
     try {
-        // Tester la connexion à la base de données
-        connection = await mysql.createConnection(dbConfig);
-        await connection.ping();
-        
-        res.status(200).json({ 
-            status: 'healthy',
-            database: 'connected',
-            config: {
-                host: dbConfig.host,
-                user: dbConfig.user,
-                database: dbConfig.database,
-                port: dbConfig.port,
-                family: dbConfig.family
-            },
-            env: {
-                MYSQLHOST: process.env.MYSQLHOST,
-                MYSQLPORT: process.env.MYSQLPORT,
-                MYSQLUSER: process.env.MYSQLUSER,
-                MYSQLDATABASE: process.env.MYSQLDATABASE,
-                MYSQLPASSWORD: process.env.MYSQLPASSWORD
-            },
-            timestamp: new Date().toISOString()
-        });
+        const connection = await mysql.createConnection(dbConfig);
+        const [rows] = await connection.query('SELECT 1 as value');
+        await connection.end();
+        res.json({ message: 'API is running with database connection', data: rows });
     } catch (error) {
-        logger.error('Database connection error:', error);
-        // Envoyer 200 même en cas d'erreur de DB pour que le healthcheck passe
-        res.status(200).json({ 
-            status: 'starting',
-            database: 'initializing',
-            error: error.message,
-            config: {
-                host: dbConfig.host,
-                user: dbConfig.user,
-                database: dbConfig.database,
-                port: dbConfig.port,
-                family: dbConfig.family
-            },
-            env: {
-                MYSQLHOST: process.env.MYSQLHOST,
-                MYSQLPORT: process.env.MYSQLPORT,
-                MYSQLUSER: process.env.MYSQLUSER,
-                MYSQLDATABASE: process.env.MYSQLDATABASE,
-                MYSQLPASSWORD: process.env.MYSQLPASSWORD
-            },
-            timestamp: new Date().toISOString()
+        logger.error('Database error:', error);
+        res.json({ 
+            message: 'API is running without database connection', 
+            error: error.message 
         });
-    } finally {
-        if (connection) {
-            await connection.end();
-        }
     }
 });
 
