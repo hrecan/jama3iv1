@@ -12,8 +12,8 @@ restartPolicyMaxRetries = 10
 [deploy.envs]
 PORT = "3000"
 NODE_ENV = "production"
-MYSQLHOST = "${{MYSQLHOST}}"
-MYSQLPORT = "${{MYSQLPORT}}"
-MYSQLUSER = "${{MYSQLUSER}}"
-MYSQLPASSWORD = "${{MYSQL_ROOT_PASSWORD}}"
-MYSQLDATABASE = "${{MYSQL_DATABASE}}"
+MYSQLHOST = "containers-us-west-207.railway.app"
+MYSQLPORT = "7132"
+MYSQLUSER = "root"
+MYSQLPASSWORD = "{{ MYSQL_ROOT_PASSWORD }}"
+MYSQLDATABASE = "railway"
