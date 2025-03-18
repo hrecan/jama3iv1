@@ -31,7 +31,13 @@ const dbConfig = {
     database: process.env.MYSQL_DATABASE || 'railway',
     connectTimeout: 30000,
     // Forcer IPv4
-    family: 4
+    family: 4,
+    // Add retry configuration
+    acquireTimeout: 60000,
+    waitForConnections: true,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
 };
 
 // Middleware de base
@@ -40,6 +46,11 @@ app.use(cors());
 
 // Servir les fichiers statiques
 app.use(express.static(path.join(__dirname, '../public')));
+
+// Route de healthcheck simple
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 // Route de healthcheck avec vérification de la base de données
 app.get('/', async (req, res) => {

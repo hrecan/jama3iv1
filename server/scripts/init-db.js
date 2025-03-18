@@ -37,7 +37,13 @@ async function initializeDatabase() {
         database: process.env.MYSQL_DATABASE || 'railway',
         connectTimeout: 30000,
         // Forcer IPv4
-        family: 4
+        family: 4,
+        // Add retry configuration
+        acquireTimeout: 60000,
+        waitForConnections: true,
+        queueLimit: 0,
+        enableKeepAlive: true,
+        keepAliveInitialDelay: 0
     };
 
     console.log('Configuration DB:', {

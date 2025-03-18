@@ -3,8 +3,8 @@ builder = "NIXPACKS"
 buildCommand = "cd server && npm install"
 
 [deploy]
-startCommand = "cd server && node scripts/init-db.js && node index.js"
-healthcheckPath = "/"
+startCommand = "cd server && node scripts/init-db.js && NODE_ENV=production node index.js"
+healthcheckPath = "/health"
 healthcheckTimeout = 180
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
