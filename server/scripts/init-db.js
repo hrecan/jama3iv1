@@ -1,7 +1,5 @@
 require('dotenv').config();
 const mysql = require('mysql2/promise');
-const fs = require('fs').promises;
-const path = require('path');
 const dns = require('dns');
 
 // Forcer l'utilisation d'IPv4
@@ -16,12 +14,11 @@ console.log("Variables d'environnement disponibles:", {
 
 const dbConfig = {
   host: process.env.MYSQLHOST || 'localhost',
-  port: parseInt(process.env.MYSQLPORT || '3306'),
   user: process.env.MYSQLUSER || 'root',
-  password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE || 'railway',
+  port: parseInt(process.env.MYSQLPORT || '3306'),
+  password: process.env.MYSQLPASSWORD,
   connectTimeout: 30000,
-  // Options de connexion valides pour mysql2
   connectionLimit: 10,
   waitForConnections: true,
   queueLimit: 0
@@ -40,39 +37,11 @@ async function initializeDatabase() {
     const connection = await mysql.createConnection(dbConfig);
     console.log('Connexion établie avec succès');
 
-    // Lire le fichier SQL
-    console.log('Lecture du fichier SQL...');
-    const sqlFile = await fs.readFile(
-      path.join(__dirname, '../database/database.sql'),
-      'utf8'
-    );
+    // Ici vous pouvez ajouter vos requêtes d'initialisation
+    // Par exemple, créer des tables si elles n'existent pas
 
-    // Diviser le fichier en instructions SQL individuelles
-    const sqlStatements = sqlFile
-      .split(';')
-      .filter(stmt => stmt.trim());
-
-    // Exécuter chaque instruction SQL
-    console.log('Exécution des requêtes SQL...');
-    for (const statement of sqlStatements) {
-      if (statement.trim()) {
-        try {
-          await connection.query(statement);
-          console.log('Requête exécutée avec succès');
-        } catch (error) {
-          if (error.code === 'ER_TABLE_EXISTS_ERROR') {
-            console.log('Table déjà existante, continuation...');
-          } else {
-            console.error('Erreur SQL:', error.message);
-            throw error;
-          }
-        }
-      }
-    }
-
-    console.log('Initialisation de la base de données terminée avec succès');
     await connection.end();
-    console.log('Connexion à la base de données fermée');
+    console.log('Initialisation de la base de données terminée.');
   } catch (error) {
     console.error('Erreur lors de l\'initialisation de la base de données:', error);
     // Ne pas faire échouer le démarrage de l'application
