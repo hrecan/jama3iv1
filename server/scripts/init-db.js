@@ -8,40 +8,26 @@ const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 
 async function initializeDatabase() {
-    // Récupérer l'hôte depuis les variables d'environnement
-    const privateHost = process.env.RAILWAY_PRIVATE_DOMAIN;
-    const proxyHost = process.env.RAILWAY_TCP_PROXY_DOMAIN;
-    const mysqlHost = process.env.MYSQL_HOST;
-
-    // Construire l'hôte complet avec le port
-    const host = mysqlHost || (privateHost ? `${privateHost}:${process.env.MYSQL_PORT || '3306'}` : proxyHost);
-    
-    if (!host) {
-        throw new Error('Aucune variable d\'environnement d\'hôte MySQL trouvée');
-    }
-
-    console.log('Variables d\'environnement disponibles:', {
-        RAILWAY_PRIVATE_DOMAIN: process.env.RAILWAY_PRIVATE_DOMAIN,
-        RAILWAY_TCP_PROXY_DOMAIN: process.env.RAILWAY_TCP_PROXY_DOMAIN,
-        MYSQL_HOST: process.env.MYSQL_HOST,
-        MYSQL_USER: process.env.MYSQL_USER,
-        MYSQL_DATABASE: process.env.MYSQL_DATABASE,
-        MYSQL_PORT: process.env.MYSQL_PORT,
-        MYSQL_URL: process.env.MYSQL_URL
-    });
-
+    // Utiliser les variables d'environnement MySQL spécifiques
     const dbConfig = {
-        host: host.split(':')[0],  // Extraire l'hôte sans le port
-        port: parseInt(host.split(':')[1] || process.env.MYSQL_PORT || '3306'),
-        user: process.env.MYSQL_USER || 'root',
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE || 'railway',
+        host: process.env.MYSQLHOST || 'localhost',
+        port: parseInt(process.env.MYSQLPORT || '3306'),
+        user: process.env.MYSQLUSER || 'root',
+        password: process.env.MYSQLPASSWORD,
+        database: process.env.MYSQLDATABASE || 'railway',
         connectTimeout: 30000,
         // Options de connexion valides pour mysql2
         connectionLimit: 10,
         waitForConnections: true,
         queueLimit: 0
     };
+
+    console.log('Variables d\'environnement disponibles:', {
+        MYSQLHOST: process.env.MYSQLHOST,
+        MYSQLPORT: process.env.MYSQLPORT,
+        MYSQLUSER: process.env.MYSQLUSER,
+        MYSQLDATABASE: process.env.MYSQLDATABASE
+    });
 
     console.log('Configuration DB:', {
         host: dbConfig.host,
