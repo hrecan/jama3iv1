@@ -30,14 +30,12 @@ const dbConfig = {
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE || 'railway',
     connectTimeout: 30000,
-    // Forcer IPv4
+    // Configuration IPv4
     family: 4,
-    // Add retry configuration
-    acquireTimeout: 60000,
+    // Options de connexion valides pour mysql2
+    connectionLimit: 10,
     waitForConnections: true,
-    queueLimit: 0,
-    enableKeepAlive: true,
-    keepAliveInitialDelay: 0
+    queueLimit: 0
 };
 
 // Middleware de base
