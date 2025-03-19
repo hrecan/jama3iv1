@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page non trouvée - JAMA3I</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/navbar.css">
+    <link rel="stylesheet" href="../../css/error.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="error-404">
+    <header>
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="../index.html">Accueil</a>
+                <a href="../courses.html">Cours</a>
+                <a href="../events.html">Événements</a>
+                <a href="../quran.html">Coran</a>
+            </div>
+            <div class="auth-buttons">
+                <div id="user-section" style="display: none;">
+                    <span id="user-name"></span>
+                    <button class="btn-logout" onclick="logout()">Se déconnecter</button>
+                </div>
+                <div id="guest-section">
+                    <a href="../login.html" class="btn-login">Se connecter</a>
+                    <a href="../register.html" class="btn-register">S'inscrire</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="error-container">
+        <h1>404 - Page non trouvée</h1>
+        <p>Désolé, la page que vous recherchez n'existe pas.</p>
+        <a href="../index.html">Retour à l'accueil</a>
+    </div>
+    <script src="../../js/auth.js"></script>
+</body>
+</html>
