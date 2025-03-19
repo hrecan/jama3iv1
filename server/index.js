@@ -10,15 +10,15 @@ const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Configuration de la base de données
 const dbConfig = {
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: 'Asmarh06072024*',
-    database: 'jama3iv001',
+    host: process.env.MYSQLHOST || 'localhost',
+    port: parseInt(process.env.MYSQLPORT || '3306', 10),
+    user: process.env.MYSQLUSER || 'root',
+    password: process.env.MYSQLPASSWORD || '',
+    database: process.env.MYSQLDATABASE || 'railway',
     connectTimeout: 30000,
     // Configuration IPv4
     family: 4,
@@ -36,6 +36,11 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/views', express.static(path.join(__dirname, '../public/views')));
 app.use('/components', express.static(path.join(__dirname, '../public/views/components')));
+
+// Point de contrôle pour Railway
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 // Routes API
 app.use('/api/database', require('./routes/database-view'));
