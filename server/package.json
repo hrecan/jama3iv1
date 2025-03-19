@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config index.js",
+    "start": "node scripts/init-db.js && node -r dotenv/config index.js",
     "dev": "nodemon index.js",
     "init-db": "node scripts/init-db.js"
   },
