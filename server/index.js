@@ -84,8 +84,9 @@ app.use((err, req, res, next) => {
 });
 
 // Démarrage du serveur
-const server = app.listen(port, '0.0.0.0', () => {
-    logger.info(`Server is running on port ${port}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+    logger.info(`Serveur démarré sur le port ${PORT}`);
     logger.info('Database config:', {
         host: dbConfig.host,
         user: dbConfig.user,
