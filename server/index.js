@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 // Configuration de la base de données
 const dbConfig = {
-    host: process.env.MYSQLHOST || 'localhost',
+    host: process.env.RAILWAY_TCP_PROXY_DOMAIN || process.env.MYSQLHOST || 'localhost',
     port: parseInt(process.env.MYSQLPORT || '3306', 10),
     user: process.env.MYSQLUSER || 'root',
     password: process.env.MYSQLPASSWORD || '',
@@ -27,6 +27,15 @@ const dbConfig = {
     waitForConnections: true,
     queueLimit: 0
 };
+
+// Log de la configuration
+logger.info('Database config:', {
+    host: dbConfig.host,
+    user: dbConfig.user,
+    database: dbConfig.database,
+    port: dbConfig.port,
+    family: dbConfig.family
+});
 
 // Middleware de base
 app.use(express.json());
